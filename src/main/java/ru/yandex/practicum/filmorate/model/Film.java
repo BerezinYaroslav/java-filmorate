@@ -13,6 +13,8 @@ public class Film {
     private Integer id;
     private String name;
     private String description;
+    private String genre;
+    private String rating;
     private LocalDate releaseDate;
     private Integer duration;
     private final Set<Integer> likesIds = new HashSet<>();
