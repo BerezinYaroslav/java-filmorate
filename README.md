@@ -1,7 +1,7 @@
 # Java Filmorare Project
 
 ## Диаграмма базы данных
-![Filmorate DB](https://user-images.githubusercontent.com/81358883/226446418-45ffb5e0-3c89-43f5-9445-36410d369fb1.png)
+![Uploading image.png…]()
 
 ## Примеры запросов базы данных
 - Получить таблицу пользователей: SELECT * FROM user
