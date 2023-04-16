@@ -2,7 +2,6 @@ package ru.yandex.practicum.filmorate.storage.memory;
 
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 
 import java.util.*;
@@ -22,17 +21,6 @@ public class InMemoryFilmStorage implements FilmStorage {
     @Override
     public Optional<Film> deleteFilm(Integer filmId) {
         return Optional.empty();
-    }
-
-    // TODO: 14.04.2023 убрать
-    @Override
-    public Optional<Genre> getGenre(Integer genreId) {
-        return Optional.empty();
-    }
-
-    @Override
-    public List<Genre> getAllGenres() {
-        return null;
     }
 
     @Override
@@ -57,20 +45,5 @@ public class InMemoryFilmStorage implements FilmStorage {
         }
 
         return Optional.of(films.get(id));
-    }
-
-    @Override
-    public Film likeFilm(Integer filmId, Integer userId) {
-        return null;
-    }
-
-    @Override
-    public Film unlikeFilm(Integer filmId, Integer userId) {
-        return null;
-    }
-
-    @Override
-    public List<Film> getMostPopularFilm(Integer count) {
-        return null;
     }
 }
