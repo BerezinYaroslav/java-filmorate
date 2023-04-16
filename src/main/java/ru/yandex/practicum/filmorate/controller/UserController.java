@@ -16,56 +16,56 @@ import java.util.Set;
 @RequiredArgsConstructor
 @Slf4j
 public class UserController {
-    private final UserService service;
+    private final UserService userService;
 
     @PostMapping
     private User createUser(@RequestBody User user) {
         validate(user);
-        return service.createUser(user);
+        return userService.createUser(user);
     }
 
     @PutMapping
     public User updateUser(@RequestBody User user) {
         validate(user);
-        return service.updateUser(user);
+        return userService.updateUser(user);
     }
 
     @DeleteMapping("/{userId}")
     private User deleteUser(@PathVariable Integer userId) {
-        return service.deleteUser(userId);
+        return userService.deleteUser(userId);
     }
 
     @GetMapping
     public List<User> getAllUsers() {
-        return service.getAllUsers();
+        return userService.getAllUsers();
     }
 
     @GetMapping("/{userId}")
     public User getUserById(@PathVariable Integer userId) {
-        return service.getUserById(userId);
+        return userService.getUserById(userId);
     }
 
     @PutMapping("/{userId}/friends/{friendId}")
     public void addFriend(@PathVariable Integer userId,
                           @PathVariable Integer friendId) {
-        service.addFriend(userId, friendId);
+        userService.addFriend(userId, friendId);
     }
 
     @DeleteMapping("/{userId}/friends/{friendId}")
     public void deleteFriend(@PathVariable Integer userId,
                              @PathVariable Integer friendId) {
-        service.deleteFriend(userId, friendId);
+        userService.deleteFriend(userId, friendId);
     }
 
     @GetMapping("/{userId}/friends")
     public List<User> getAllFriends(@PathVariable Integer userId) {
-        return service.getAllFriends(userId);
+        return userService.getAllFriends(userId);
     }
 
     @GetMapping("/{userId}/friends/common/{otherUserId}")
     public Set<User> getCommonFriends(@PathVariable Integer userId,
                                       @PathVariable Integer otherUserId) {
-        return service.getCommonFriendsIds(userId, otherUserId);
+        return userService.getCommonFriendsIds(userId, otherUserId);
     }
 
     public static void validate(User user) {

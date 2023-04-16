@@ -21,8 +21,8 @@ public class LikeDbStorage implements LikeStorage {
 
     @Override
     public Film likeFilm(Integer filmId, Integer userId) {
-        String sql = "INSERT INTO \"like_list\" (FILM_ID, USER_ID) VALUES (?, ?)";
-        jdbcTemplate.update(sql,
+        String insertLike = "INSERT INTO \"like_list\" (FILM_ID, USER_ID) VALUES (?, ?)";
+        jdbcTemplate.update(insertLike,
                 filmId,
                 userId);
         Film film = filmStorage.getFilmById(filmId).get();
@@ -32,8 +32,8 @@ public class LikeDbStorage implements LikeStorage {
 
     @Override
     public Film unlikeFilm(Integer filmId, Integer userId) {
-        String sql = "DELETE FROM \"like_list\" WHERE FILM_ID = ? AND USER_ID = ?";
-        jdbcTemplate.update(sql,
+        String deleteLike = "DELETE FROM \"like_list\" WHERE FILM_ID = ? AND USER_ID = ?";
+        jdbcTemplate.update(deleteLike,
                 filmId,
                 userId);
         Film film = filmStorage.getFilmById(filmId).get();

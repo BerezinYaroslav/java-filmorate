@@ -23,14 +23,14 @@ public class FriendDbStorage implements FriendStorage {
 
     @Override
     public void addFriend(Integer userId, Integer friendId) {
-        String sql = "INSERT INTO \"friend_list\" (USER_ID, FRIEND_ID) VALUES (?, ?)";
-        jdbcTemplate.update(sql, userId, friendId);
+        String insertFriend = "INSERT INTO \"friend_list\" (USER_ID, FRIEND_ID) VALUES (?, ?)";
+        jdbcTemplate.update(insertFriend, userId, friendId);
     }
 
     @Override
     public void deleteFriend(Integer userId, Integer friendId) {
-        String sql = "DELETE FROM \"friend_list\" WHERE USER_ID = ? AND FRIEND_ID = ?";
-        jdbcTemplate.update(sql, userId, friendId);
+        String deleteFriend = "DELETE FROM \"friend_list\" WHERE USER_ID = ? AND FRIEND_ID = ?";
+        jdbcTemplate.update(deleteFriend, userId, friendId);
     }
 
     @Override

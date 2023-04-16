@@ -11,7 +11,10 @@ import ru.yandex.practicum.filmorate.storage.UserStorage;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 
 @Component
 @Primary
@@ -21,14 +24,12 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public User createUser(User user) {
-        String sql = "INSERT INTO \"user\" (EMAIL, LOGIN, NAME, BIRTHDAY) VALUES (?, ?, ?, ?)";
-
-        jdbcTemplate.update(sql,
+        String insertUser = "INSERT INTO \"user\" (EMAIL, LOGIN, NAME, BIRTHDAY) VALUES (?, ?, ?, ?)";
+        jdbcTemplate.update(insertUser,
                 user.getEmail(),
                 user.getLogin(),
                 user.getName(),
                 user.getBirthday());
-
         SqlRowSet userRows = jdbcTemplate.queryForRowSet("SELECT * FROM \"user\" WHERE LOGIN = ?", user.getLogin());
 
         if (userRows.next()) {
@@ -50,15 +51,13 @@ public class UserDbStorage implements UserStorage {
             return Optional.empty();
         }
 
-        String sql = "UPDATE \"user\" SET EMAIL = ?, LOGIN = ?, NAME = ?, BIRTHDAY = ? WHERE ID = ?";
-
-        jdbcTemplate.update(sql,
+        String updateUser = "UPDATE \"user\" SET EMAIL = ?, LOGIN = ?, NAME = ?, BIRTHDAY = ? WHERE ID = ?";
+        jdbcTemplate.update(updateUser,
                 user.getEmail(),
                 user.getLogin(),
                 user.getName(),
                 Date.valueOf(user.getBirthday()),
                 user.getId());
-
         return Optional.of(user);
     }
 
@@ -117,14 +116,14 @@ public class UserDbStorage implements UserStorage {
             return Optional.empty();
         }
 
-        String sql = "DELETE FROM \"user\" WHERE ID = ?";
-        jdbcTemplate.update(sql, userId);
+        String deleteUser = "DELETE FROM \"user\" WHERE ID = ?";
+        jdbcTemplate.update(deleteUser, userId);
         return user;
     }
 
     private Collection<Integer> getFriends(User user) {
-        String sql = "SELECT * FROM \"friend_list\" WHERE USER_ID = ?";
-        return jdbcTemplate.query(sql, (rs, rowNum) -> makeFriend(user, rs), user.getId());
+        String selectFriend = "SELECT * FROM \"friend_list\" WHERE USER_ID = ?";
+        return jdbcTemplate.query(selectFriend, (rs, rowNum) -> makeFriend(user, rs), user.getId());
     }
 
     private Integer makeFriend(User user, ResultSet rs) throws SQLException {
