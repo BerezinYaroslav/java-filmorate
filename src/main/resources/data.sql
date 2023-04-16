@@ -1,17 +1,17 @@
--- заполняем таблицу rating
-INSERT INTO "rating" (NAME)
+-- заполняем таблицу mpa
+INSERT INTO "mpa" (NAME)
 VALUES ('G');
 
-INSERT INTO "rating" (NAME)
+INSERT INTO "mpa" (NAME)
 VALUES ('PG');
 
-INSERT INTO "rating" (NAME)
+INSERT INTO "mpa" (NAME)
 VALUES ('PG-13');
 
-INSERT INTO "rating" (NAME)
+INSERT INTO "mpa" (NAME)
 VALUES ('R');
 
-INSERT INTO "rating" (NAME)
+INSERT INTO "mpa" (NAME)
 VALUES ('NC-17');
 
 

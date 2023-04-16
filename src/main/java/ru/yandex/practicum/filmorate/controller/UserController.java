@@ -30,6 +30,11 @@ public class UserController {
         return service.updateUser(user);
     }
 
+    @DeleteMapping("/{userId}")
+    private User deleteUser(@PathVariable Integer userId) {
+        return service.deleteUser(userId);
+    }
+
     @GetMapping
     public List<User> getAllUsers() {
         return service.getAllUsers();

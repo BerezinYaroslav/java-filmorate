@@ -5,19 +5,36 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.storage.FriendStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class UserService {
     private final UserStorage userStorage;
+    private final FriendStorage friendStorage;
 
     public User createUser(User user) {
         log.debug("User '" + user.getName() + "' created successfully");
         return userStorage.createUser(user);
+    }
+
+    public User deleteUser(Integer userId) {
+        User user = getUserById(userId);
+        Optional<User> optionalUser = userStorage.deleteUser(userId);
+
+        if (optionalUser.isEmpty()) {
+            log.debug("Incorrect ID error: User with this ID does not exist when deleting");
+            throw new NotFoundException("User with this ID does not exist when deleting");
+        }
+
+        log.debug("User '" + user.getName() + "' delete successfully");
+        return optionalUser.get();
     }
 
     public User updateUser(User user) {
@@ -58,10 +75,8 @@ public class UserService {
             throw new NotFoundException("Users do not exist when adding friend");
         }
 
-        user.getFriendsIds().add(friendId);
-        friend.getFriendsIds().add(userId);
+        friendStorage.addFriend(userId, friendId);
         log.debug("Friend with ID '" + friendId + "' successfully added to user '" + userId + "'");
-        log.debug("Friend with ID '" + userId + "' successfully added to user '" + friendId + "'");
     }
 
     public void deleteFriend(Integer userId, Integer friendId) {
@@ -77,37 +92,18 @@ public class UserService {
             throw new NotFoundException("User has not friend with id '" + friendId + "' when deleting friend");
         }
 
-        user.getFriendsIds().remove(friendId);
-        friend.getFriendsIds().remove(userId);
+        friendStorage.deleteFriend(userId, friendId);
         log.debug("Friend with ID '" + friendId + "' successfully removed from user '" + userId + "' friends list");
-        log.debug("Friend with ID '" + userId + "' successfully removed from user '" + friendId + "' friends list");
     }
 
     public List<User> getAllFriends(Integer userId) {
-        User user = getUserById(userId);
-        List<User> users = new ArrayList<>();
-
-        for (Integer friendsId : user.getFriendsIds()) {
-            users.add(getUserById(friendsId));
-        }
-
+        List<User> users = friendStorage.getAllFriends(userId);
         log.debug("All friends returned successfully");
         return users;
     }
 
     public Set<User> getCommonFriendsIds(Integer userId, Integer otherUserId) {
-        User user = getUserById(userId);
-        User otherUser = getUserById(otherUserId);
-        Set<User> commonFriends = new HashSet<>();
-
-        for (Integer idFriend : user.getFriendsIds()) {
-            for (Integer otherIdFriend : otherUser.getFriendsIds()) {
-                if (Objects.equals(idFriend, otherIdFriend)) {
-                    commonFriends.add(getUserById(idFriend));
-                }
-            }
-        }
-
+        Set<User> commonFriends = friendStorage.getCommonFriendsIds(userId, otherUserId);
         log.debug("Common friends returned successfully");
         return commonFriends;
     }

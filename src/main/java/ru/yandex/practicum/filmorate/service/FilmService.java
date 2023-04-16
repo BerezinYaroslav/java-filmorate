@@ -5,11 +5,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.Genre;
+import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.MpaStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -20,6 +24,7 @@ import java.util.stream.Collectors;
 public class FilmService {
     private final FilmStorage filmStorage;
     private final UserStorage userStorage;
+    private final MpaStorage mpaStorage;
 
     public Film addFilm(Film film) {
         log.debug("Film '" + film.getName() + "' added successfully");
@@ -35,6 +40,19 @@ public class FilmService {
         }
 
         log.debug("Film '" + film.getName() + "' updated successfully");
+        return optionalFilm.get();
+    }
+
+    public Film deleteFilm(Integer filmId) {
+        Film film = getFilmById(filmId);
+        Optional<Film> optionalFilm = filmStorage.deleteFilm(filmId);
+
+        if (optionalFilm.isEmpty()) {
+            log.debug("Incorrect ID error: Film with this ID does not exist when deleting");
+            throw new NotFoundException("Film with this ID does not exist when deleting");
+        }
+
+        log.debug("Film '" + film.getName() + "' delete successfully");
         return optionalFilm.get();
     }
 
@@ -55,6 +73,26 @@ public class FilmService {
         return optionalFilm.get();
     }
 
+    public Genre getGenre(Integer id) {
+        Optional<Genre> genre = filmStorage.getGenre(id);
+
+        if (genre.isEmpty()) {
+            throw new NotFoundException("Genre with id " + id + " not found");
+        }
+
+        return genre.get();
+    }
+
+    public Collection<Genre> getAllGenres() {
+        List<Genre> genreList = filmStorage.getAllGenres();
+
+        if (genreList.isEmpty()) {
+            throw new NotFoundException("Genres not found");
+        }
+
+        return genreList;
+    }
+
     public Film likeFilm(Integer filmId, Integer userId) {
         Film film = getFilmById(filmId);
         Optional<User> optionalUser = userStorage.getUserById(userId);
@@ -64,7 +102,7 @@ public class FilmService {
             throw new NotFoundException("User with this ID does not exist when liking film");
         }
 
-        film.getLikesIds().add(userId);
+        filmStorage.likeFilm(filmId, userId);
         log.debug("Film with ID '" + filmId + "' successfully liked by user with ID '" + userId + "'");
         return film;
     }
@@ -77,23 +115,35 @@ public class FilmService {
             throw new NotFoundException("Film '" + film + "' has not likes from user with ID '" + userId + "' when unliking");
         }
 
-        film.getLikesIds().remove(userId);
+        filmStorage.unlikeFilm(filmId, userId);
         log.debug("Film with id '" + filmId + "' successfully unliked by user with ID '" + userId + "'");
         return film;
     }
 
     public List<Film> getMostLikedFilms(Integer count) {
-        List<Film> films = new ArrayList<>(getAllFilms());
+//        List<Film> films = new ArrayList<>(filmStorage.getAllFilms());
+//
+//        log.debug("Most popular films returned successfully");
+//        return films.stream()
+//                .sorted((f1, f2) -> -1 * (f1.getLikesIds().size() - f2.getLikesIds().size()))
+//                .limit(count)
+//                .collect(Collectors.toList());
 
-        log.debug("Most popular films returned successfully");
-        return films.stream()
-                .sorted(this::compare)
-                .skip(0)
-                .limit(count)
-                .collect(Collectors.toList());
+        return filmStorage.getMostPopularFilm(count);
     }
 
-    private int compare(Film f0, Film f1) {
-        return -1 * (f0.getLikesIds().size() - f1.getLikesIds().size());
+    public Mpa getMpa(Integer mpaId) {
+        log.debug("Mpa returned");
+
+        if (mpaStorage.getMpa(mpaId) != null) {
+            return mpaStorage.getMpa(mpaId);
+        } else {
+            throw new NotFoundException("Mpa with id " + mpaId + " not found");
+        }
+    }
+
+    public List<Mpa> getAllMpa() {
+        log.debug("All mpa returned");
+        return mpaStorage.getAllMpa();
     }
 }
