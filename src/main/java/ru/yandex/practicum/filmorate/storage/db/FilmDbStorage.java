@@ -32,7 +32,7 @@ public class FilmDbStorage implements FilmStorage {
 
         if (filmRows.next()) {
             if (!film.getLikesIds().isEmpty()) {
-                for (Integer userId: film.getLikesIds()) {
+                for (Integer userId : film.getLikesIds()) {
                     String sql1 = "INSERT INTO \"like_list\" (FILM_ID, USER_ID) VALUES (?, ?)";
                     jdbcTemplate.update(sql1,
                             filmRows.getInt("id"),
@@ -42,22 +42,22 @@ public class FilmDbStorage implements FilmStorage {
 
             if (!film.getGenres().isEmpty()) {
                 String sql1 = "INSERT INTO \"film_genre\" (FILM_ID, GENRE_ID) VALUES (?, ?)";
+                Set<Genre> genres = new HashSet<>();
 
                 for (Genre genre : film.getGenres()) {
                     jdbcTemplate.update(sql1,
                             filmRows.getInt("id"),
                             genre.getId());
-                }
 
-                SqlRowSet genreRows = jdbcTemplate.queryForRowSet("SELECT * FROM \"genre\" WHERE id = ?",
-                        filmRows.getInt("id"));
-                Set<Genre> genres = new HashSet<>();
+                    SqlRowSet genreRows = jdbcTemplate.queryForRowSet("SELECT * FROM \"genre\" WHERE id = ?",
+                            genre.getId());
 
-                while (genreRows.next()) {
-                    genres.add(new Genre(
-                            genreRows.getInt("id"),
-                            genreRows.getString("name")
-                    ));
+                    if (genreRows.next()) {
+                        genres.add(new Genre(
+                                genreRows.getInt("id"),
+                                genreRows.getString("name")
+                        ));
+                    }
                 }
 
                 film.setGenres(genres);
@@ -89,7 +89,6 @@ public class FilmDbStorage implements FilmStorage {
         }
 
         String sql = "UPDATE \"film\" SET NAME = ?, RELEASE_DATE = ?, DESCRIPTION = ?, DURATION = ?, MPA_ID = ? WHERE ID = ?";
-
         jdbcTemplate.update(sql,
                 film.getName(),
                 film.getReleaseDate(),
@@ -143,7 +142,6 @@ public class FilmDbStorage implements FilmStorage {
                     filmRows.getInt("duration")
             );
 
-            // TODO: 16.04.2023
             SqlRowSet likeRows = jdbcTemplate.queryForRowSet("SELECT * FROM \"like_list\" WHERE FILM_ID = ?",
                     film.getId());
 
@@ -155,21 +153,21 @@ public class FilmDbStorage implements FilmStorage {
             SqlRowSet filmGenre = jdbcTemplate.queryForRowSet("SELECT * FROM \"film_genre\" WHERE FILM_ID = ?",
                     filmRows.getInt("id"));
 
+            Set<Genre> genres = new HashSet<>();
+
             while (filmGenre.next()) {
                 SqlRowSet genreRows = jdbcTemplate.queryForRowSet("SELECT * FROM \"genre\" WHERE ID = ?",
                         filmGenre.getInt("genre_id"));
-                Set<Genre> genres = new HashSet<>();
 
-                while (genreRows.next()) {
+                if (genreRows.next()) {
                     genres.add(new Genre(
                             genreRows.getInt("id"),
                             genreRows.getString("name")
                     ));
                 }
-
-                film.setGenres(genres);
             }
 
+            film.setGenres(genres);
             return Optional.of(film);
         } else {
             return Optional.empty();
@@ -235,7 +233,7 @@ public class FilmDbStorage implements FilmStorage {
         SqlRowSet filmRows = jdbcTemplate.queryForRowSet("SELECT * FROM \"film\" GROUP BY ID " +
                 "ORDER BY COUNT(SELECT * FROM \"like_list\" WHERE ID = \"film\".ID), ID DESC");
 
-        Integer i = 0;
+        int i = 0;
 
         while (filmRows.next() && i < count) {
             films.add(getFilmById(filmRows.getInt("id")).get());
