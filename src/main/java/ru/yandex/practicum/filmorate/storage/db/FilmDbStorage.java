@@ -11,6 +11,7 @@ import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Component
 @Primary
@@ -97,7 +98,24 @@ public class FilmDbStorage implements FilmStorage {
                 film.getMpa().getId(),
                 film.getId());
 
-        return Optional.of(film);
+        SqlRowSet filmRows = jdbcTemplate.queryForRowSet("SELECT * FROM \"film\" WHERE ID = ?", film.getId());
+
+        if (filmRows.next()) {
+            String sql0 = "DELETE FROM \"film_genre\" WHERE FILM_ID = ?";
+            jdbcTemplate.update(sql0,
+                    film.getId());
+
+            if (!film.getGenres().isEmpty()) {
+                for (Genre genre : film.getGenres()) {
+                    String sql1 = "INSERT INTO \"film_genre\" (FILM_ID, GENRE_ID)  VALUES (?, ?)";
+                    jdbcTemplate.update(sql1,
+                            film.getId(),
+                            genre.getId());
+                }
+            }
+        }
+
+        return getFilmById(film.getId());
     }
 
     @Override
@@ -150,7 +168,7 @@ public class FilmDbStorage implements FilmStorage {
             }
 
             film.setMpa(mpa);
-            SqlRowSet filmGenre = jdbcTemplate.queryForRowSet("SELECT * FROM \"film_genre\" WHERE FILM_ID = ?",
+            SqlRowSet filmGenre = jdbcTemplate.queryForRowSet("SELECT * FROM \"film_genre\" WHERE FILM_ID = ? ORDER BY GENRE_ID",
                     filmRows.getInt("id"));
 
             Set<Genre> genres = new HashSet<>();
