@@ -11,10 +11,7 @@ import ru.yandex.practicum.filmorate.storage.UserStorage;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Component
 @Primary
@@ -33,13 +30,7 @@ public class UserDbStorage implements UserStorage {
         SqlRowSet userRows = jdbcTemplate.queryForRowSet("SELECT * FROM \"user\" WHERE LOGIN = ?", user.getLogin());
 
         if (userRows.next()) {
-            return new User(
-                    userRows.getInt("id"),
-                    userRows.getString("email"),
-                    userRows.getString("login"),
-                    userRows.getString("name"),
-                    userRows.getDate("birthday").toLocalDate()
-            );
+            return mapUser(userRows);
         } else {
             return user;
         }
@@ -67,13 +58,7 @@ public class UserDbStorage implements UserStorage {
         SqlRowSet userRows = jdbcTemplate.queryForRowSet("SELECT * FROM \"user\"");
 
         while (userRows.next()) {
-            User user = new User(
-                    userRows.getInt("id"),
-                    userRows.getString("email"),
-                    userRows.getString("login"),
-                    userRows.getString("name"),
-                    userRows.getDate("birthday").toLocalDate()
-            );
+            User user = mapUser(userRows);
 
             for (Integer friendId : getFriends(user)) {
                 user.getFriendsIds().add(friendId);
@@ -90,13 +75,8 @@ public class UserDbStorage implements UserStorage {
         SqlRowSet userRows = jdbcTemplate.queryForRowSet("SELECT * FROM \"user\" WHERE ID = ?", id);
 
         if (userRows.next()) {
-            User user = new User(
-                    id,
-                    userRows.getString("email"),
-                    userRows.getString("login"),
-                    userRows.getString("name"),
-                    userRows.getDate("birthday").toLocalDate()
-            );
+            User user = mapUser(userRows);
+            user.setId(id);
 
             for (Integer friendId : getFriends(user)) {
                 user.getFriendsIds().add(friendId);
@@ -128,5 +108,44 @@ public class UserDbStorage implements UserStorage {
 
     private Integer makeFriend(User user, ResultSet rs) throws SQLException {
         return rs.getInt("friend_id");
+    }
+
+    @Override
+    public List<User> getAllFriends(Integer userId) {
+        List<User> friends = new ArrayList<>();
+        SqlRowSet userRows = jdbcTemplate.queryForRowSet("SELECT FRIEND_ID FROM \"friend_list\" WHERE USER_ID = ?", userId);
+
+        while (userRows.next()) {
+            Integer id = userRows.getInt("friend_id");
+            friends.add(getUserById(id).get());
+        }
+
+        return friends;
+    }
+
+    @Override
+    public Set<User> getCommonFriendsIds(Integer userId, Integer otherUserId) {
+        Set<User> friends = new HashSet<>();
+        SqlRowSet userRows = jdbcTemplate.queryForRowSet("SELECT FRIEND_ID FROM \"friend_list\" " +
+                        "WHERE USER_ID = ? AND FRIEND_ID IN (SELECT FRIEND_ID FROM \"friend_list\" WHERE USER_ID = ?)",
+                userId,
+                otherUserId);
+
+        while (userRows.next()) {
+            Integer id = userRows.getInt("friend_id");
+            friends.add(getUserById(id).get());
+        }
+
+        return friends;
+    }
+
+    private User mapUser(SqlRowSet userRows) {
+        return new User(
+                userRows.getInt("id"),
+                userRows.getString("email"),
+                userRows.getString("login"),
+                userRows.getString("name"),
+                userRows.getDate("birthday").toLocalDate()
+        );
     }
 }

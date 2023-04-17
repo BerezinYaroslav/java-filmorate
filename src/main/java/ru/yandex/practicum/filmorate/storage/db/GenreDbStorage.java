@@ -20,13 +20,10 @@ public class GenreDbStorage implements GenreStorage {
 
     @Override
     public Optional<Genre> getGenre(Integer genreId) {
-        SqlRowSet filmRows = jdbcTemplate.queryForRowSet("SELECT * FROM \"genre\" WHERE ID = ?", genreId);
+        SqlRowSet genreRows = jdbcTemplate.queryForRowSet("SELECT * FROM \"genre\" WHERE ID = ?", genreId);
 
-        if (filmRows.next()) {
-            return Optional.of(new Genre(
-                    filmRows.getInt("id"),
-                    filmRows.getString("name")
-            ));
+        if (genreRows.next()) {
+            return Optional.of(mapGenre(genreRows));
         } else {
             return Optional.empty();
         }
@@ -38,13 +35,17 @@ public class GenreDbStorage implements GenreStorage {
         SqlRowSet genreRows = jdbcTemplate.queryForRowSet("SELECT * FROM \"genre\" ORDER BY ID");
 
         while (genreRows.next()) {
-            Genre genre = new Genre(
-                    genreRows.getInt("id"),
-                    genreRows.getString("name")
-            );
+            Genre genre = mapGenre(genreRows);
             genres.add(genre);
         }
 
         return genres;
+    }
+
+    private Genre mapGenre(SqlRowSet genreRows) {
+        return new Genre(
+                genreRows.getInt("id"),
+                genreRows.getString("name")
+        );
     }
 }

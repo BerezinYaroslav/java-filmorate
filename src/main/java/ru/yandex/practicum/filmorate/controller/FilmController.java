@@ -20,7 +20,7 @@ public class FilmController {
     @PostMapping
     private Film addFilm(@RequestBody Film film) {
         validate(film);
-        return this.filmService.addFilm(film);
+        return filmService.addFilm(film);
     }
 
     @DeleteMapping("/{filmId}")
@@ -31,7 +31,7 @@ public class FilmController {
     @PutMapping
     public Film updateFilm(@RequestBody Film film) {
         validate(film);
-        return this.filmService.updateFilm(film);
+        return filmService.updateFilm(film);
     }
 
     @GetMapping

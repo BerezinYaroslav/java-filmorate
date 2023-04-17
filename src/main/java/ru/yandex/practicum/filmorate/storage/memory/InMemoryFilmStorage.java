@@ -19,11 +19,6 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public Optional<Film> deleteFilm(Integer filmId) {
-        return Optional.empty();
-    }
-
-    @Override
     public Optional<Film> updateFilm(Film film) {
         if (!films.containsKey(film.getId())) {
             return Optional.empty();
@@ -45,5 +40,15 @@ public class InMemoryFilmStorage implements FilmStorage {
         }
 
         return Optional.of(films.get(id));
+    }
+
+    @Override
+    public Optional<Film> deleteFilm(Integer filmId) {
+        return Optional.empty();
+    }
+
+    @Override
+    public List<Film> getMostPopularFilm(Integer count) {
+        return null;
     }
 }

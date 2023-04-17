@@ -96,6 +96,6 @@ public class FilmService {
     }
 
     public List<Film> getMostLikedFilms(Integer count) {
-        return likeStorage.getMostPopularFilm(count);
+        return filmStorage.getMostPopularFilm(count);
     }
 }

@@ -18,9 +18,9 @@ import java.util.Collection;
 public class GenreController {
     private final GenreService genreService;
 
-    @GetMapping("/{filmId}")
-    public Genre getGenre(@PathVariable Integer filmId) {
-        return genreService.getGenre(filmId);
+    @GetMapping("/{genreId}")
+    public Genre getGenre(@PathVariable Integer genreId) {
+        return genreService.getGenre(genreId);
     }
 
     @GetMapping

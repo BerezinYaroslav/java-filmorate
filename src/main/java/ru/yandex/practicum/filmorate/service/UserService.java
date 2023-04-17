@@ -25,7 +25,6 @@ public class UserService {
     }
 
     public User deleteUser(Integer userId) {
-        User user = getUserById(userId);
         Optional<User> optionalUser = userStorage.deleteUser(userId);
 
         if (optionalUser.isEmpty()) {
@@ -33,7 +32,7 @@ public class UserService {
             throw new NotFoundException("User with this ID does not exist when deleting");
         }
 
-        log.debug("User '" + user.getName() + "' delete successfully");
+        log.debug("User '" + getUserById(userId).getName() + "' delete successfully");
         return optionalUser.get();
     }
 
@@ -97,13 +96,13 @@ public class UserService {
     }
 
     public List<User> getAllFriends(Integer userId) {
-        List<User> users = friendStorage.getAllFriends(userId);
+        List<User> users = userStorage.getAllFriends(userId);
         log.debug("All friends returned successfully");
         return users;
     }
 
     public Set<User> getCommonFriendsIds(Integer userId, Integer otherUserId) {
-        Set<User> commonFriends = friendStorage.getCommonFriendsIds(userId, otherUserId);
+        Set<User> commonFriends = userStorage.getCommonFriendsIds(userId, otherUserId);
         log.debug("Common friends returned successfully");
         return commonFriends;
     }

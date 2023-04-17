@@ -17,14 +17,14 @@ import java.util.Optional;
 public class GenreService {
     private final GenreStorage genreStorage;
 
-    public Genre getGenre(Integer id) {
-        Optional<Genre> genre = genreStorage.getGenre(id);
+    public Genre getGenre(Integer genreId) {
+        Optional<Genre> genre = genreStorage.getGenre(genreId);
 
         if (genre.isEmpty()) {
-            throw new NotFoundException("Genre with id " + id + " not found");
+            throw new NotFoundException("Genre with id " + genreId + " not found");
         }
 
-        log.debug("Genre with id'" + id + "' returned successfully");
+        log.debug("Genre with id'" + genreId + "' returned successfully");
         return genre.get();
     }
 

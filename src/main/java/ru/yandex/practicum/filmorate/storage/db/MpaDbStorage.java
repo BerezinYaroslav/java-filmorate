@@ -10,6 +10,7 @@ import ru.yandex.practicum.filmorate.storage.MpaStorage;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Component
 @Primary
@@ -18,16 +19,16 @@ public class MpaDbStorage implements MpaStorage {
     private final JdbcTemplate jdbcTemplate;
 
     @Override
-    public Mpa getMpa(Integer mpaId) {
+    public Optional<Mpa> getMpa(Integer mpaId) {
         SqlRowSet mpaRows = jdbcTemplate.queryForRowSet("SELECT * FROM \"mpa\" WHERE id = ?", mpaId);
 
         if (mpaRows.next()) {
-            return new Mpa(
+            return Optional.of(new Mpa(
                     mpaRows.getInt("id"),
                     mpaRows.getString("name")
-            );
+            ));
         } else {
-            return null;
+            return Optional.empty();
         }
     }
 

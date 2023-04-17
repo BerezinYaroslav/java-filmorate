@@ -46,4 +46,14 @@ public class InMemoryUserStorage implements UserStorage {
     public Optional<User> deleteUser(Integer userId) {
         return Optional.empty();
     }
+
+    @Override
+    public List<User> getAllFriends(Integer userId) {
+        return null;
+    }
+
+    @Override
+    public Set<User> getCommonFriendsIds(Integer userId, Integer otherUserId) {
+        return null;
+    }
 }
