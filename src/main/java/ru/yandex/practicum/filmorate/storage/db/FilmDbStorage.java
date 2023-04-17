@@ -107,10 +107,10 @@ public class FilmDbStorage implements FilmStorage {
                 "LEFT JOIN \"film_genre\" fg ON f.ID = fg.FILM_ID " +
                 "LEFT JOIN \"genre\" g ON fg.GENRE_ID = g.ID " +
                 "LEFT JOIN \"like_list\" l ON f.ID = l.FILM_ID";
-        return jdbcTemplate.query(sqlRequest, listResultSetExtractor);
+        return jdbcTemplate.query(sqlRequest, filmsExtractor);
     }
 
-    private final ResultSetExtractor<List<Film>> listResultSetExtractor = rs -> {
+    private final ResultSetExtractor<List<Film>> filmsExtractor = rs -> {
         Map<Integer, Film> filmMap = new HashMap<>();
         Film film;
 

@@ -113,7 +113,8 @@ public class UserDbStorage implements UserStorage {
     @Override
     public List<User> getAllFriends(Integer userId) {
         List<User> friends = new ArrayList<>();
-        SqlRowSet userRows = jdbcTemplate.queryForRowSet("SELECT FRIEND_ID FROM \"friend_list\" WHERE USER_ID = ?", userId);
+        SqlRowSet userRows = jdbcTemplate.queryForRowSet("SELECT FRIEND_ID FROM \"friend_list\" WHERE USER_ID = ?",
+                userId);
 
         while (userRows.next()) {
             Integer id = userRows.getInt("friend_id");
