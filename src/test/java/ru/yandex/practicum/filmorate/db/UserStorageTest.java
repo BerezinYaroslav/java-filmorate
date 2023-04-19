@@ -61,6 +61,8 @@ public class UserStorageTest {
 
     @Test
     public void deleteUser() {
+        clearDb();
+
         userStorage.createUser(User.builder()
                 .email("test5@")
                 .name("test5")
