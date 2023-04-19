@@ -6,6 +6,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorate.mapper.FilmRowMapper;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Mpa;
@@ -34,14 +35,7 @@ public class FilmDbStorage implements FilmStorage {
 
         if (filmRows.next()) {
             if (!film.getGenres().isEmpty()) {
-                String insertGenre = "INSERT INTO \"film_genre\" (FILM_ID, GENRE_ID) VALUES (?, ?)";
-
-                for (Genre genre : film.getGenres()) {
-                    jdbcTemplate.update(insertGenre,
-                            filmRows.getInt("id"),
-                            genre.getId());
-                }
-
+                addGenresToFilm(filmRows.getInt("id"), film.getGenres());
                 film.setGenres(getFilmGenres(filmRows.getInt("id")));
             }
 
@@ -86,12 +80,7 @@ public class FilmDbStorage implements FilmStorage {
                     film.getId());
 
             if (!film.getGenres().isEmpty()) {
-                for (Genre genre : film.getGenres()) {
-                    String insertGenre = "INSERT INTO \"film_genre\" (FILM_ID, GENRE_ID)  VALUES (?, ?)";
-                    jdbcTemplate.update(insertGenre,
-                            film.getId(),
-                            genre.getId());
-                }
+                addGenresToFilm(film.getId(), film.getGenres());
             }
         }
 
@@ -100,7 +89,7 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public List<Film> getAllFilms() {
-        String sqlRequest = "SELECT f.ID, f.NAME, f.DESCRIPTION, f.RELEASE_DATE, f.DURATION, f.MPA_ID , " +
+        String sqlRequest = "SELECT f.ID, f.NAME, f.DESCRIPTION, f.RELEASE_DATE, f.DURATION, f.MPA_ID, " +
                 "m.ID m_id, m.NAME m_name, fg.GENRE_ID fg_genre_id, g.NAME g_name, l.USER_ID l_user_id " +
                 "FROM \"film\" f " +
                 "LEFT JOIN \"mpa\" m ON f.MPA_ID = m.ID " +
@@ -154,38 +143,16 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public Optional<Film> getFilmById(Integer id) {
-        SqlRowSet filmRows = jdbcTemplate.queryForRowSet("SELECT * FROM \"film\" WHERE ID = ?", id);
-
-        if (filmRows.next()) {
-            Mpa mpa = null;
-            SqlRowSet filmRows1 = jdbcTemplate.queryForRowSet("SELECT * from \"film\" WHERE ID = ?",
-                    filmRows.getInt("id"));
-
-            if (filmRows1.next()) {
-                SqlRowSet mpaRows = jdbcTemplate.queryForRowSet("SELECT * from \"mpa\" WHERE ID = ?",
-                        filmRows1.getInt("mpa_id"));
-
-                if (mpaRows.next()) {
-                    mpa = new Mpa(
-                            mpaRows.getInt("id"),
-                            mpaRows.getString("name")
-                    );
-                }
-            }
-
-            Film film = new Film(
-                    filmRows.getInt("id"),
-                    filmRows.getString("name"),
-                    filmRows.getString("description"),
-                    filmRows.getDate("release_date").toLocalDate(),
-                    filmRows.getInt("duration")
-            );
+        try {
+            String sqlRequest = "SELECT f.ID, f.NAME, f.DESCRIPTION, f.RELEASE_DATE, " +
+                    "f.DURATION, f.MPA_ID, m.ID m_id, m.NAME m_name FROM \"film\" f LEFT JOIN \"mpa\" m ON f.MPA_ID = m.ID " +
+                    "WHERE f.ID = ?";
+            Film film = jdbcTemplate.queryForObject(sqlRequest, new FilmRowMapper(), id);
 
             addLikesToFilm(film);
-            film.setMpa(mpa);
             film.setGenres(getFilmGenres(id));
             return Optional.of(film);
-        } else {
+        } catch (Throwable e) {
             return Optional.empty();
         }
     }
@@ -210,6 +177,16 @@ public class FilmDbStorage implements FilmStorage {
         }
 
         return genres;
+    }
+
+    private void addGenresToFilm(Integer filmId, Set<Genre> genres) {
+        String insertGenre = "INSERT INTO \"film_genre\" (FILM_ID, GENRE_ID) VALUES (?, ?)";
+
+        for (Genre genre : genres) {
+            jdbcTemplate.update(insertGenre,
+                    filmId,
+                    genre.getId());
+        }
     }
 
 

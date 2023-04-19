@@ -6,4 +6,6 @@ public interface LikeStorage {
     Film likeFilm(Integer filmId, Integer userId);
 
     Film unlikeFilm(Integer filmId, Integer userId);
+
+    void clearLikes(Integer filmId);
 }
