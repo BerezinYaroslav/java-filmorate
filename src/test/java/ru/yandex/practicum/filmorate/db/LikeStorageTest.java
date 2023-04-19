@@ -15,6 +15,9 @@ import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.Set;
+
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @SpringBootTest
 @AutoConfigureTestDatabase
@@ -51,26 +54,26 @@ public class LikeStorageTest {
 
     @Test
     public void likeAndUnlikeFilm() {
-//        Film film = filmStorage.getAllFilms().get(0);
-//        User user = userStorage.getAllUsers().get(0);
-//
-//        likeStorage.likeFilm(
-//                film.getId(),
-//                user.getId());
-//
-//        film = filmStorage.getAllFilms().get(0);
-//        Set<Integer> likes = film.getLikesIds();
-//
-//        assertThat(likes.size()).isEqualTo(1);
-//        assertThat(likes).isEqualTo(Set.of(user.getId()));
-//
-//        likeStorage.unlikeFilm(
-//                film.getId(),
-//                user.getId());
-//
-//        film = filmStorage.getAllFilms().get(0);
-//        likes = film.getLikesIds();
-//
-//        assertThat(likes.size()).isEqualTo(0);
+        Film film = filmStorage.getAllFilms().get(0);
+        User user = userStorage.getAllUsers().get(0);
+
+        likeStorage.likeFilm(
+                film.getId(),
+                user.getId());
+
+        film = filmStorage.getAllFilms().get(0);
+        Set<Integer> likes = film.getLikesIds();
+
+        assertThat(likes.size()).isEqualTo(1);
+        assertThat(likes).isEqualTo(Set.of(user.getId()));
+
+        likeStorage.unlikeFilm(
+                film.getId(),
+                user.getId());
+
+        film = filmStorage.getAllFilms().get(0);
+        likes = film.getLikesIds();
+
+        assertThat(likes.size()).isEqualTo(0);
     }
 }
