@@ -1,8 +1,10 @@
 package ru.yandex.practicum.filmorate.db;
 
 import lombok.RequiredArgsConstructor;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Mpa;
@@ -18,14 +20,15 @@ import java.util.Set;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @SpringBootTest
+@AutoConfigureTestDatabase
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class LikeStorageTest {
     private final LikeStorage likeStorage;
     private final FilmStorage filmStorage;
     private final UserStorage userStorage;
 
-    @Test
-    public void likeAndUnlikeFilm() {
+    @BeforeEach
+    public void pullFilmAndUserDb() {
         filmStorage.addFilm(Film.builder()
                 .name("film")
                 .description("film")
@@ -47,7 +50,10 @@ public class LikeStorageTest {
                         1,
                         1))
                 .build());
+    }
 
+    @Test
+    public void likeAndUnlikeFilm() {
         Film film = filmStorage.getAllFilms().get(0);
         User user = userStorage.getAllUsers().get(0);
 

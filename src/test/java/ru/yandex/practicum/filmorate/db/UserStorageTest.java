@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.db;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
@@ -13,23 +14,14 @@ import java.util.List;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @SpringBootTest
+@AutoConfigureTestDatabase
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class UserStorageTest {
     private final UserStorage userStorage;
     private List<User> users;
 
-    private void clearUserDb() {
-        users = userStorage.getAllUsers();
-
-        for (User user : users) {
-            userStorage.deleteUser(user.getId());
-        }
-    }
-
     @Test
     public void createUserAndGetAllUsers() {
-        clearUserDb();
-
         userStorage.createUser(User.builder()
                 .email("test1@")
                 .name("test1")
@@ -67,12 +59,10 @@ public class UserStorageTest {
 
     @Test
     public void deleteUser() {
-        clearUserDb();
-
         userStorage.createUser(User.builder()
-                .email("test1@")
-                .name("test1")
-                .login("test1")
+                .email("test4@")
+                .name("test4")
+                .login("test4")
                 .birthday(LocalDate.of(
                         1990,
                         1,
@@ -80,9 +70,9 @@ public class UserStorageTest {
                 .build());
 
         userStorage.createUser(User.builder()
-                .email("test2@")
-                .name("test2")
-                .login("test2")
+                .email("test5@")
+                .name("test5")
+                .login("test5")
                 .birthday(LocalDate.of(
                         1990,
                         1,
@@ -90,9 +80,9 @@ public class UserStorageTest {
                 .build());
 
         userStorage.createUser(User.builder()
-                .email("test3@")
-                .name("test3")
-                .login("test3")
+                .email("test6@")
+                .name("test6")
+                .login("test6")
                 .birthday(LocalDate.of(
                         1990,
                         1,
@@ -100,7 +90,7 @@ public class UserStorageTest {
                 .build());
 
         users = userStorage.getAllUsers();
-        assertThat(users.size()).isEqualTo(3);
+        assertThat(users.size()).isEqualTo(10);
 
         for (User user : users) {
             userStorage.deleteUser(user.getId());
@@ -112,12 +102,10 @@ public class UserStorageTest {
 
     @Test
     public void updateUserAndGetUserById() {
-        clearUserDb();
-
         userStorage.createUser(User.builder()
-                .email("test1@")
-                .name("test1")
-                .login("test1")
+                .email("test7@")
+                .name("test7")
+                .login("test7")
                 .birthday(LocalDate.of(
                         1990,
                         1,
@@ -125,9 +113,9 @@ public class UserStorageTest {
                 .build());
 
         userStorage.createUser(User.builder()
-                .email("test2@")
-                .name("test2")
-                .login("test2")
+                .email("test8@")
+                .name("test8")
+                .login("test8")
                 .birthday(LocalDate.of(
                         1990,
                         1,
@@ -135,9 +123,9 @@ public class UserStorageTest {
                 .build());
 
         userStorage.createUser(User.builder()
-                .email("test3@")
-                .name("test3")
-                .login("test3")
+                .email("test9@")
+                .name("test9")
+                .login("test9")
                 .birthday(LocalDate.of(
                         1990,
                         1,
@@ -145,9 +133,9 @@ public class UserStorageTest {
                 .build());
 
         userStorage.createUser(User.builder()
-                .email("test4@")
-                .name("test4")
-                .login("test4")
+                .email("test10@")
+                .name("test10")
+                .login("test10")
                 .birthday(LocalDate.of(
                         1990,
                         1,
