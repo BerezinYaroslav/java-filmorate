@@ -42,16 +42,6 @@ public class UserStorageTest {
                         1))
                 .build());
 
-        userStorage.createUser(User.builder()
-                .email("test3@")
-                .name("test3")
-                .login("test3")
-                .birthday(LocalDate.of(
-                        1990,
-                        1,
-                        1))
-                .build());
-
         users = userStorage.getAllUsers();
         assertThat(users.get(0).getName()).isEqualTo("test1");
         assertThat(users.get(1).getEmail()).isEqualTo("test2@");
@@ -59,16 +49,6 @@ public class UserStorageTest {
 
     @Test
     public void deleteUser() {
-        userStorage.createUser(User.builder()
-                .email("test4@")
-                .name("test4")
-                .login("test4")
-                .birthday(LocalDate.of(
-                        1990,
-                        1,
-                        1))
-                .build());
-
         userStorage.createUser(User.builder()
                 .email("test5@")
                 .name("test5")
@@ -90,7 +70,7 @@ public class UserStorageTest {
                 .build());
 
         users = userStorage.getAllUsers();
-        assertThat(users.size()).isEqualTo(10);
+        assertThat(users.size()).isEqualTo(8);
 
         for (User user : users) {
             userStorage.deleteUser(user.getId());
