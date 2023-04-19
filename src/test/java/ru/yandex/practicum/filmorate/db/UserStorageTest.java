@@ -49,6 +49,12 @@ public class UserStorageTest {
 
     @Test
     public void deleteUser() {
+        users = userStorage.getAllUsers();
+
+        for (User user : users) {
+            userStorage.deleteUser(user.getId());
+        }
+
         userStorage.createUser(User.builder()
                 .email("test5@")
                 .name("test5")
@@ -70,7 +76,7 @@ public class UserStorageTest {
                 .build());
 
         users = userStorage.getAllUsers();
-        assertThat(users.size()).isEqualTo(8);
+        assertThat(users.size()).isEqualTo(2);
 
         for (User user : users) {
             userStorage.deleteUser(user.getId());

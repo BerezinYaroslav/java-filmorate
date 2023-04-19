@@ -29,9 +29,9 @@ public class FriendStorageTest {
         clearUserDb();
 
         userStorage.createUser(User.builder()
-                .email("test1@")
-                .name("test1")
-                .login("test1")
+                .email("test21@")
+                .name("test21")
+                .login("test21")
                 .birthday(LocalDate.of(
                         1990,
                         1,
@@ -39,9 +39,9 @@ public class FriendStorageTest {
                 .build());
 
         userStorage.createUser(User.builder()
-                .email("test2@")
-                .name("test2")
-                .login("test2")
+                .email("test22@")
+                .name("test22")
+                .login("test22")
                 .birthday(LocalDate.of(
                         1990,
                         1,
