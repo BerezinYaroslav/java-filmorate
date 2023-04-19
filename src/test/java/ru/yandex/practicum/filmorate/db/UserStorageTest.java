@@ -28,8 +28,6 @@ public class UserStorageTest {
 
     @Test
     public void createUserAndGetAllUsers() {
-        clearDb();
-
         userStorage.createUser(User.builder()
                 .email("test1@")
                 .name("test1")
@@ -57,8 +55,6 @@ public class UserStorageTest {
 
     @Test
     public void deleteUser() {
-        clearDb();
-
         userStorage.createUser(User.builder()
                 .email("test6@")
                 .name("test6")
@@ -80,8 +76,6 @@ public class UserStorageTest {
 
     @Test
     public void updateUserAndGetUserById() {
-        clearDb();
-
         userStorage.createUser(User.builder()
                 .email("test7@")
                 .name("test7")
