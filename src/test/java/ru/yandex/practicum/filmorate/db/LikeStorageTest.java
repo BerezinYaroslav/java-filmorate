@@ -1,7 +1,6 @@
 package ru.yandex.practicum.filmorate.db;
 
 import lombok.RequiredArgsConstructor;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -25,8 +24,8 @@ public class LikeStorageTest {
     private final FilmStorage filmStorage;
     private final UserStorage userStorage;
 
-    @BeforeEach
-    public void pullFilmAndUserDb() {
+    @Test
+    public void likeAndUnlikeFilm() {
         filmStorage.addFilm(Film.builder()
                 .name("film")
                 .description("film")
@@ -48,10 +47,7 @@ public class LikeStorageTest {
                         1,
                         1))
                 .build());
-    }
 
-    @Test
-    public void likeAndUnlikeFilm() {
         Film film = filmStorage.getAllFilms().get(0);
         User user = userStorage.getAllUsers().get(0);
 

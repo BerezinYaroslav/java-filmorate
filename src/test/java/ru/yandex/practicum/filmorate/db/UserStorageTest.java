@@ -1,7 +1,6 @@
 package ru.yandex.practicum.filmorate.db;
 
 import lombok.RequiredArgsConstructor;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,8 +18,16 @@ public class UserStorageTest {
     private final UserStorage userStorage;
     private List<User> users;
 
-    @BeforeEach
-    public void pullUserDb() {
+    private void clearUserDb() {
+        users = userStorage.getAllUsers();
+
+        for (User user : users) {
+            userStorage.deleteUser(user.getId());
+        }
+    }
+
+    @Test
+    public void createUserAndGetAllUsers() {
         clearUserDb();
 
         userStorage.createUser(User.builder()
@@ -52,18 +59,7 @@ public class UserStorageTest {
                         1,
                         1))
                 .build());
-    }
 
-    private void clearUserDb() {
-        users = userStorage.getAllUsers();
-
-        for (User user : users) {
-            userStorage.deleteUser(user.getId());
-        }
-    }
-
-    @Test
-    public void createUserAndGetAllUsers() {
         users = userStorage.getAllUsers();
         assertThat(users.get(0).getName()).isEqualTo("test1");
         assertThat(users.get(1).getEmail()).isEqualTo("test2@");
@@ -71,6 +67,38 @@ public class UserStorageTest {
 
     @Test
     public void deleteUser() {
+        clearUserDb();
+
+        userStorage.createUser(User.builder()
+                .email("test1@")
+                .name("test1")
+                .login("test1")
+                .birthday(LocalDate.of(
+                        1990,
+                        1,
+                        1))
+                .build());
+
+        userStorage.createUser(User.builder()
+                .email("test2@")
+                .name("test2")
+                .login("test2")
+                .birthday(LocalDate.of(
+                        1990,
+                        1,
+                        1))
+                .build());
+
+        userStorage.createUser(User.builder()
+                .email("test3@")
+                .name("test3")
+                .login("test3")
+                .birthday(LocalDate.of(
+                        1990,
+                        1,
+                        1))
+                .build());
+
         users = userStorage.getAllUsers();
         assertThat(users.size()).isEqualTo(3);
 
@@ -84,6 +112,38 @@ public class UserStorageTest {
 
     @Test
     public void updateUserAndGetUserById() {
+        clearUserDb();
+
+        userStorage.createUser(User.builder()
+                .email("test1@")
+                .name("test1")
+                .login("test1")
+                .birthday(LocalDate.of(
+                        1990,
+                        1,
+                        1))
+                .build());
+
+        userStorage.createUser(User.builder()
+                .email("test2@")
+                .name("test2")
+                .login("test2")
+                .birthday(LocalDate.of(
+                        1990,
+                        1,
+                        1))
+                .build());
+
+        userStorage.createUser(User.builder()
+                .email("test3@")
+                .name("test3")
+                .login("test3")
+                .birthday(LocalDate.of(
+                        1990,
+                        1,
+                        1))
+                .build());
+
         userStorage.createUser(User.builder()
                 .email("test4@")
                 .name("test4")
