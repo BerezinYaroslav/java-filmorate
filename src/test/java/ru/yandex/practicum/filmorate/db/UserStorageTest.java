@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.db;
 
 import lombok.RequiredArgsConstructor;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -20,8 +21,19 @@ public class UserStorageTest {
     private final UserStorage userStorage;
     private List<User> users;
 
+    @BeforeEach
+    public void clearDb() {
+        users = userStorage.getAllUsers();
+
+        for (User user : users) {
+            userStorage.deleteUser(user.getId());
+        }
+    }
+
     @Test
     public void createUserAndGetAllUsers() {
+        clearDb();
+
         userStorage.createUser(User.builder()
                 .email("test1@")
                 .name("test1")
@@ -49,12 +61,6 @@ public class UserStorageTest {
 
     @Test
     public void deleteUser() {
-        users = userStorage.getAllUsers();
-
-        for (User user : users) {
-            userStorage.deleteUser(user.getId());
-        }
-
         userStorage.createUser(User.builder()
                 .email("test5@")
                 .name("test5")
@@ -78,9 +84,7 @@ public class UserStorageTest {
         users = userStorage.getAllUsers();
         assertThat(users.size()).isEqualTo(2);
 
-        for (User user : users) {
-            userStorage.deleteUser(user.getId());
-        }
+        clearDb();
 
         users = userStorage.getAllUsers();
         assertThat(users.size()).isEqualTo(0);
