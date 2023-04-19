@@ -90,8 +90,12 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public void deleteAllUsers() {
-        String deleteUser = "DELETE FROM \"user\"";
-        jdbcTemplate.update(deleteUser);
+        String deleteFriends = "DELETE FROM \"friend_list\"";
+        String deleteLikes = "DELETE FROM \"like_list\"";
+        String deleteUsers = "DELETE FROM \"user\"";
+        jdbcTemplate.update(deleteFriends);
+        jdbcTemplate.update(deleteLikes);
+        jdbcTemplate.update(deleteUsers);
     }
 
     @Override
