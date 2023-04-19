@@ -56,4 +56,8 @@ public class InMemoryUserStorage implements UserStorage {
     public Set<User> getCommonFriendsIds(Integer userId, Integer otherUserId) {
         return null;
     }
+
+    @Override
+    public void deleteAllUsers() {
+    }
 }

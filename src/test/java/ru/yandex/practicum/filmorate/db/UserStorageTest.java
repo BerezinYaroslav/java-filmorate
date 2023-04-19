@@ -23,11 +23,7 @@ public class UserStorageTest {
 
     @BeforeEach
     public void clearDb() {
-        users = userStorage.getAllUsers();
-
-        for (User user : users) {
-            userStorage.deleteUser(user.getId());
-        }
+        userStorage.deleteAllUsers();
     }
 
     @Test
@@ -64,16 +60,6 @@ public class UserStorageTest {
         clearDb();
 
         userStorage.createUser(User.builder()
-                .email("test5@")
-                .name("test5")
-                .login("test5")
-                .birthday(LocalDate.of(
-                        1990,
-                        1,
-                        1))
-                .build());
-
-        userStorage.createUser(User.builder()
                 .email("test6@")
                 .name("test6")
                 .login("test6")
@@ -84,9 +70,9 @@ public class UserStorageTest {
                 .build());
 
         users = userStorage.getAllUsers();
-        assertThat(users.size()).isEqualTo(2);
+        assertThat(users.size()).isEqualTo(1);
 
-        clearDb();
+        userStorage.deleteAllUsers();
 
         users = userStorage.getAllUsers();
         assertThat(users.size()).isEqualTo(0);
@@ -94,30 +80,12 @@ public class UserStorageTest {
 
     @Test
     public void updateUserAndGetUserById() {
+        clearDb();
+
         userStorage.createUser(User.builder()
                 .email("test7@")
                 .name("test7")
                 .login("test7")
-                .birthday(LocalDate.of(
-                        1990,
-                        1,
-                        1))
-                .build());
-
-        userStorage.createUser(User.builder()
-                .email("test8@")
-                .name("test8")
-                .login("test8")
-                .birthday(LocalDate.of(
-                        1990,
-                        1,
-                        1))
-                .build());
-
-        userStorage.createUser(User.builder()
-                .email("test9@")
-                .name("test9")
-                .login("test9")
                 .birthday(LocalDate.of(
                         1990,
                         1,
