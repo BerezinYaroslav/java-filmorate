@@ -15,45 +15,50 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 public class FilmController {
-    private final FilmService service;
+    private final FilmService filmService;
 
     @PostMapping
     private Film addFilm(@RequestBody Film film) {
         validate(film);
-        return service.addFilm(film);
+        return filmService.addFilm(film);
+    }
+
+    @DeleteMapping("/{filmId}")
+    private Film deleteFilm(@PathVariable Integer filmId) {
+        return filmService.deleteFilm(filmId);
     }
 
     @PutMapping
     public Film updateFilm(@RequestBody Film film) {
         validate(film);
-        return service.updateFilm(film);
+        return filmService.updateFilm(film);
     }
 
     @GetMapping
     public List<Film> getAllFilms() {
-        return service.getAllFilms();
+        return filmService.getAllFilms();
     }
 
     @GetMapping("/{filmId}")
     public Film getFilmById(@PathVariable Integer filmId) {
-        return service.getFilmById(filmId);
+        return filmService.getFilmById(filmId);
     }
 
     @PutMapping("/{filmId}/like/{userId}")
     public Film likeFilm(@PathVariable Integer filmId,
                          @PathVariable Integer userId) {
-        return service.likeFilm(filmId, userId);
+        return filmService.likeFilm(filmId, userId);
     }
 
     @DeleteMapping("/{filmId}/like/{userId}")
     public Film unlikeFilm(@PathVariable Integer filmId,
                            @PathVariable Integer userId) {
-        return service.unlikeFilm(filmId, userId);
+        return filmService.unlikeFilm(filmId, userId);
     }
 
     @GetMapping("/popular")
     public List<Film> getMostLikedFilms(@RequestParam(required = false, defaultValue = "10") Integer count) {
-        return service.getMostLikedFilms(count);
+        return filmService.getMostLikedFilms(count);
     }
 
     public static void validate(Film film) {
